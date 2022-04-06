@@ -1,15 +1,22 @@
 package teksystems.casestudy.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import teksystems.casestudy.database.dao.UserDAO;
 import teksystems.casestudy.database.entity.User;
 import teksystems.casestudy.formbean.RegisterFormBean;
 
+import javax.validation.Valid;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 //This is the controller method for the entry point of the user registration page.
 //It does not do anything really other than provide a route to the register.jsp page.
@@ -45,9 +52,21 @@ import java.util.Date;
             //the RegisterFormBean
 
         @RequestMapping(value = "/user/registerSubmit", method = RequestMethod.POST)
-        public ModelAndView registerSubmit(RegisterFormBean form) throws Exception {
+        public ModelAndView registerSubmit(@Valid RegisterFormBean form, BindingResult bindingResult) throws Exception {
             ModelAndView response = new ModelAndView();
-//            response.setViewName("user/register");
+
+            if ( bindingResult.hasErrors() ) {
+                HashMap errors = new HashMap();
+
+                for ( ObjectError error : bindingResult.getAllErrors() ) {
+//                    errors.put( ((FieldError) error).getField(), error.getDefaultMessage());
+                    log.info( ((FieldError) error).getField() + " " + error.getDefaultMessage());
+                }
+                response.addObject("formErrors", errors);
+
+                response.setViewName("user/register");
+                return response;
+            }//if bindingResult.hasErrors()
 
             //the first thing we want to do is create a new user object
 //            User user = new User();
@@ -107,6 +126,41 @@ import java.util.Date;
             response.addObject("form", form);
 
             return response;
+    }
+
+    // create a form on the user search page that submits to this route using a get method
+    // make an input box for the user to enter a search term for first name
+    // add a @RequestParam to take in a search value from the input box - use required = false in the annotation
+    // use the search value in the query
+    // add the search value to the model and make it display in the input box when the page reloads
+    // add error checking to make sure that the incoming search value is not null and is not empty.
+    // find apache string utils on maven central and add it to your pom file - very high recommendation
+    // research the StringUtils.isEmpty function and use for error checking
+    //if you wanna get all users, use the findAll() method
+    //String has a method called isBlank() for checking only containing spaces
+
+    @GetMapping("/user/search")
+    public ModelAndView search(@RequestParam(name = "search", required = false, defaultValue = "") String firstName) {
+        ModelAndView response = new ModelAndView();
+        response.setViewName("user/search");
+
+        List<User> users;
+
+        //very basic example of error checking
+
+        if (!StringUtils.isBlank(firstName)) {
+            users = UserDAO.findByFirstNameIgnoreCaseContaining(firstName);
+            response.addObject("users", users);
+        } else {
+            firstName = "Search";
+        }
+
+        response.addObject("searchValue", firstName);
+
+//            List<User> users = UserDAO.findByFirstNameIgnoreCaseContaining("e");
+//            response.addObject("users", users);
+
+        return response;
     }
 
 }
