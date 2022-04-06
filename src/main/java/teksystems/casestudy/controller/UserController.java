@@ -14,6 +14,7 @@ import teksystems.casestudy.database.entity.User;
 import teksystems.casestudy.formbean.RegisterFormBean;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,18 +52,21 @@ import java.util.List;
             //This method now becomes a create and an edit based on if the id is populated in
             //the RegisterFormBean
 
-        @RequestMapping(value = "/user/registerSubmit", method = RequestMethod.POST)
+        @RequestMapping(value = "/user/registerSubmit", method={ RequestMethod.POST, RequestMethod.GET })
         public ModelAndView registerSubmit(@Valid RegisterFormBean form, BindingResult bindingResult) throws Exception {
             ModelAndView response = new ModelAndView();
 
+//            int i = 10 / 0;
+
             if ( bindingResult.hasErrors() ) {
-                HashMap errors = new HashMap();
 
                 for ( ObjectError error : bindingResult.getAllErrors() ) {
-//                    errors.put( ((FieldError) error).getField(), error.getDefaultMessage());
                     log.info( ((FieldError) error).getField() + " " + error.getDefaultMessage());
                 }
-                response.addObject("formErrors", errors);
+
+                response.addObject("form", form);
+//                response.addObject("errorMessages", errorMessages);
+                response.addObject("bindingResult", bindingResult);
 
                 response.setViewName("user/register");
                 return response;
@@ -140,7 +144,7 @@ import java.util.List;
     //String has a method called isBlank() for checking only containing spaces
 
     @GetMapping("/user/search")
-    public ModelAndView search(@RequestParam(name = "search", required = false, defaultValue = "") String firstName) {
+    public ModelAndView search(@RequestParam(name = "firstName", required = false, defaultValue = "") String firstName) {
         ModelAndView response = new ModelAndView();
         response.setViewName("user/search");
 
@@ -152,7 +156,7 @@ import java.util.List;
             users = UserDAO.findByFirstNameIgnoreCaseContaining(firstName);
             response.addObject("users", users);
         } else {
-            firstName = "Search";
+            firstName = "Enter First Name";
         }
 
         response.addObject("searchValue", firstName);

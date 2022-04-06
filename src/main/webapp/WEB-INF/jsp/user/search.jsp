@@ -6,7 +6,7 @@
 <h1>Search</h1>
 
 <form action="/user/search" method="get">
-    <input type="text" name="search" id="searchId" placeholder="${searchValue}">
+    <input type="text" name="firstName" id="firstNameId" placeholder="${searchValue}">
     <button type="submit">Submit</button>
 </form>
 

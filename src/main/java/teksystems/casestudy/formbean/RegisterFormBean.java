@@ -5,10 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
+import teksystems.casestudy.validation.EmailUnique;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 @Getter
 @Setter
@@ -21,6 +20,7 @@ public class RegisterFormBean {
 
     @NotBlank(message = "Email is required.")
     @Pattern(regexp = "[a-z0-9]+@[a-z]+\\.[a-z]{2,3}", message = "Email format invalid.")
+    @EmailUnique(message = "Your email is already in the database.")
     private String email;
 
     @NotBlank(message = "First Name is required.")
@@ -35,5 +35,8 @@ public class RegisterFormBean {
 
     @NotBlank(message = "Confirm Password is required.")
     private String confirmPassword;
+
+    @AssertTrue(message= "Checkbox is required.")
+    private boolean checkbox;
 
 }
