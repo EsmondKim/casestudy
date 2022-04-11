@@ -15,7 +15,11 @@
 <div class="container">
 
     <a href="/index">Index</a> &nbsp;  | &nbsp;|
+    <a href="/ajax">AJAX Example</a> &nbsp;  | &nbsp;|
     <a href="/user/register">Sign Up</a> &nbsp;  | &nbsp;|
-    <a href="/user/search">Search</a>
+    <a href="/user/search">Search</a> &nbsp;  | &nbsp;|
+    <a href="/login/logout">Logout</a>
+
+
 
     <hr>

@@ -160,7 +160,7 @@ import java.util.List;
         }
 
         response.addObject("searchValue", firstName);
-
+        log.info(String.valueOf(response));
 //            List<User> users = UserDAO.findByFirstNameIgnoreCaseContaining("e");
 //            response.addObject("users", users);
 
