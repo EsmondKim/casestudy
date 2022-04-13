@@ -1,4 +1,7 @@
-<html>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset ="utf-8">
@@ -17,9 +20,19 @@
     <a href="/index">Index</a> &nbsp;  | &nbsp;|
     <a href="/ajax">AJAX Example</a> &nbsp;  | &nbsp;|
     <a href="/user/register">Sign Up</a> &nbsp;  | &nbsp;|
-    <a href="/user/search">Search</a> &nbsp;  | &nbsp;|
-    <a href="/login/logout">Logout</a>
+<%--    <a href="/user/search">Search</a> &nbsp;  | &nbsp;|--%>
 
+    <sec:authorize access = "hasAuthority('ADMIN')">
+        <a href="/user/search">Search</a>  &nbsp;  | &nbsp;|
+    </sec:authorize>
+
+    <sec:authorize access="!isAuthenticated()">
+        <a href="/login/login">Login</a>
+    </sec:authorize>
+    <sec:authorize access="isAuthenticated()">
+        <a href="/login/login">Logout</a> &nbsp;  | &nbsp;|
+        <sec:authentication property="principal.username" />
+    </sec:authorize>
 
 
     <hr>

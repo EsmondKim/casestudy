@@ -2,6 +2,7 @@ package teksystems.casestudy.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,11 +11,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
+
 @Slf4j
 @Controller
 @ControllerAdvice
 public class ErrorController {
 
+    @ExceptionHandler(value = AccessDeniedException.class)
     @RequestMapping(value="/error/404")
     public String error404(HttpServletRequest request) {
         String originalUri = (String) request.getAttribute("javax.servlet.forward.request_uri");

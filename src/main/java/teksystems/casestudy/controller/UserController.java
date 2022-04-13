@@ -3,6 +3,8 @@ package teksystems.casestudy.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -24,10 +26,14 @@ import java.util.List;
 
 @Slf4j
 @Controller
+@PreAuthorize("hasAuthority('ADMIN')")
     public class UserController {
 
         @Autowired
         private UserDAO UserDAO;
+
+        @Autowired
+        private PasswordEncoder passwordEncoder;
 
         @RequestMapping(value = "/user/register", method = RequestMethod.GET)
         public ModelAndView register() throws Exception {
@@ -98,7 +104,10 @@ import java.util.List;
             user.setEmail(form.getEmail());
             user.setFirstName(form.getFirstName());
             user.setLastName(form.getLastName());
-            user.setPassword(form.getPassword());
+//            user.setPassword(form.getPassword());
+            //04122022 added bCrypt dependency injection with @Autowired and encrypting password into db.
+            String password = passwordEncoder.encode(form.getPassword());
+            user.setPassword(password);
             user.setCreateDate((new Date()));
 
             UserDAO.save(user);

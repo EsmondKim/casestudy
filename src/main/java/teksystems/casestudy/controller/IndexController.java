@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +27,16 @@ public class IndexController {
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public ModelAndView index() throws Exception {
         ModelAndView response = new ModelAndView();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String currentPrincipalName = authentication.getName();
+//        log.debug(currentPrincipalName);
+
+        if (authentication.isAuthenticated() ) {
+            String currentPrincipalName = authentication.getName();
+            User loggedInUser = userDAO.findByEmail(currentPrincipalName);
+            log.debug("Logged in user record = " + loggedInUser);
+        }
 
         log.info("lombok logging at info level");
         log.warn("lombok logging at info level");
